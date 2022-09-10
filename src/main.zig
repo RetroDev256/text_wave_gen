@@ -2,7 +2,7 @@ const std = @import("std");
 const linux = std.os.linux;
 
 // compile time configuration constants
-const banner = "Sinecraft";
+const banner = "Sinewave";
 const term_width = 80;
 const oscilation_rows = 43;
 
@@ -19,7 +19,7 @@ const fp_div: i16 = blk: {
     break :blk @floatToInt(i16, int_max / range_float);
 };
 
-// runtime functions for mathematics
+// runtime functions for fixed point mathematics
 fn fpabs(lhs: i16) i16 {
     return if (lhs < 0) -lhs else lhs;
 }

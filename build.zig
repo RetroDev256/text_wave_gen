@@ -15,7 +15,7 @@ pub fn build(b: *Builder) !void {
     const mode = b.standardReleaseOptions();
 
     // build
-    const exe = b.addExecutable("sinecraft", "src/main.zig");
+    const exe = b.addExecutable("text_wave_gen", "src/main.zig");
     exe.strip = true;
     exe.headerpad_size = 0;
     exe.link_gc_sections = true;
