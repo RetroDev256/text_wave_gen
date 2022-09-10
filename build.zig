@@ -9,7 +9,6 @@ pub fn build(b: *Builder) !void {
     const target = b.standardTargetOptions(.{
         .default_target = .{
             .cpu_arch = .i386,
-            .os_tag = .freestanding,
         },
     });
     const mode = b.standardReleaseOptions();

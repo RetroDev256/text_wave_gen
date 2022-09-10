@@ -1,5 +1,5 @@
-const std = @import("std");
-const linux = std.os.linux;
+const os = @import("std").os;
+const builtin = @import("builtin");
 
 // compile time configuration constants
 const banner = "Sinewave";
@@ -15,7 +15,7 @@ const range: i16 = blk: {
 };
 const fp_div: i16 = blk: {
     const range_float: f128 = @intToFloat(f128, range);
-    const int_max: f128 = @intToFloat(f128, std.math.maxInt(i16));
+    const int_max: f128 = @intToFloat(f128, 65535);
     break :blk @floatToInt(i16, int_max / range_float);
 };
 
@@ -43,6 +43,28 @@ const ctr_inc: i16 = blk: {
     break :blk @floatToInt(i16, fp_div_float / osc_row_float);
 };
 
+fn write_all(buffer: []const u8) void {
+    var len_written: usize = 0;
+    while (len_written < buffer.len) {
+        len_written += switch (builtin.os.tag) {
+            .linux => blk: {
+                const stdout = os.linux.STDOUT_FILENO;
+                const segment: []const u8 = buffer[len_written..];
+                const anylen_ptr: [*]const u8 = @ptrCast([*]const u8, segment);
+                break :blk os.linux.write(stdout, anylen_ptr, segment.len);
+            },
+            else => @compileError("Unsupported OS."),
+        };
+    }
+}
+
+fn exit_success() noreturn {
+    switch (builtin.os.tag) {
+        .linux => os.linux.exit(0),
+        else => @compileError("Unsupported OS."),
+    }
+}
+
 pub export fn _start() noreturn {
     var line: i16 = 0;
     while (line < oscilation_rows) : (line += 1) {
@@ -50,11 +72,10 @@ pub export fn _start() noreturn {
         const offset: i16 = @divTrunc(scaled_osc, fp_div);
         var space: i16 = 0;
         while (space < offset) : (space += 1) {
-            _ = linux.write(1, " ", 1);
+            write_all(" ");
         }
-        _ = linux.write(1, banner, banner.len);
-        _ = linux.write(1, "\n", 1);
-        //_ = linux.nanosleep(&delay, null);
+        write_all(banner);
+        write_all("\n");
     }
-    _ = linux.exit(0);
+    exit_success();
 }
