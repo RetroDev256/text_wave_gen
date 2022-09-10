@@ -4,7 +4,7 @@ const linux = std.os.linux;
 // compile time configuration constants
 const banner = "Sinewave";
 const term_width = 80;
-const oscilation_rows = 43;
+const oscilation_rows = 35;
 
 // compile time constants
 const range: i16 = blk: {
