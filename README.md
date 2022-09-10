@@ -2,7 +2,7 @@
 
 Super small linux program to generate sine-wave offset text
 (not actually a real sine wave, but an approximation)
-
+```
 Sinewave
 Sinewave
  Sinewave
@@ -9979,3 +9979,4 @@ Sinewave
     Sinewave
   Sinewave
 Sinewave
+```
