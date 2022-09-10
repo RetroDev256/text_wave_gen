@@ -2,9 +2,9 @@ const std = @import("std");
 const linux = std.os.linux;
 
 // compile time configuration constants
-const banner = "Sinewave";
+const banner = "It will be great.";
 const term_width = 80;
-const oscilation_rows = 35;
+const oscilation_rows = 40;
 
 // compile time constants
 const range: i16 = blk: {
@@ -54,7 +54,6 @@ pub export fn _start() noreturn {
         }
         _ = linux.write(1, banner, banner.len);
         _ = linux.write(1, "\n", 1);
-        //_ = linux.nanosleep(&delay, null);
     }
     _ = linux.exit(0);
 }
