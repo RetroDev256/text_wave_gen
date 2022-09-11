@@ -48,16 +48,17 @@ pub export fn _start() noreturn {
     var buffer: [term_width]u8 = undefined;
     var line: i16 = 0;
     while (line < osc_rows) : (line += 1) {
-        for (buffer) |*elem| elem.* = ' ';
         const scaled_osc: i16 = fposc(line * ctr_inc) * range;
         const off_a: usize = @intCast(usize, @divTrunc(scaled_osc, fp_div));
         const off_b: usize = @intCast(usize, range) - off_a;
         const end_a: usize = off_a + banner.len;
         const end_b: usize = off_b + banner.len;
+        const start_len: usize = @maximum(off_a, off_b);
+        const end_len: usize = @maximum(end_a, end_b);
+        for (buffer[0..start_len]) |*elem| elem.* = ' ';
         for (buffer[off_a..end_a]) |*elem, i| elem.* = banner[i];
         for (buffer[off_b..end_b]) |*elem, i| elem.* = banner[i];
-        const written_len: usize = @maximum(end_a, end_b);
-        _ = linux.write(1, @ptrCast([*]const u8, &buffer), written_len);
+        _ = linux.write(1, @ptrCast([*]const u8, &buffer), end_len);
         _ = linux.write(1, "\n", 1);
     }
     _ = linux.exit(0);
