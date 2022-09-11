@@ -2,9 +2,9 @@ const std = @import("std");
 const linux = std.os.linux;
 
 // compile time configuration constants
-const banner = "It will be great.";
+const banner = "/\\/\\/\\";
 const term_width = 80;
-const osc_rows = 29;
+const osc_rows = 40;
 
 // compile time constants
 const range: i16 = blk: {
@@ -51,10 +51,10 @@ pub export fn _start() noreturn {
         for (buffer) |*elem| elem.* = ' ';
         const scaled_osc: i16 = fposc(line * ctr_inc) * range;
         const off_a: usize = @intCast(usize, @divTrunc(scaled_osc, fp_div));
-        const end_a: usize = off_a + banner.len;
-        for (buffer[off_a..end_a]) |*elem, i| elem.* = banner[i];
         const off_b: usize = @intCast(usize, range) - off_a;
+        const end_a: usize = off_a + banner.len;
         const end_b: usize = off_b + banner.len;
+        for (buffer[off_a..end_a]) |*elem, i| elem.* = banner[i];
         for (buffer[off_b..end_b]) |*elem, i| elem.* = banner[i];
         const written_len: usize = @maximum(end_a, end_b);
         _ = linux.write(1, @ptrCast([*]const u8, &buffer), written_len);
