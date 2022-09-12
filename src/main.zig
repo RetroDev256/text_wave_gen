@@ -42,7 +42,7 @@ const ctr_inc: i16 = blk: {
     const osc_row_float: f128 = @intToFloat(f128, osc_rows - 1);
     const ctr_inc_norm: f128 = fp_div_float / osc_row_float;
     break :blk @floatToInt(i16, @ceil(ctr_inc_norm));
-}
+};
 
 pub export fn _start() noreturn {
     var spaces: [range]u8 = undefined;
