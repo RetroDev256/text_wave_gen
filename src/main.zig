@@ -2,7 +2,7 @@ const std = @import("std");
 const linux = std.os.linux;
 
 // compile time configuration constants
-const banner = "/\\/\\/\\";
+const banner = "Waveform";
 const term_width = 80;
 const osc_rows = 40;
 
@@ -40,25 +40,18 @@ fn fposc(lhs: i16) i16 {
 const ctr_inc: i16 = blk: {
     const fp_div_float: f128 = @intToFloat(f128, fp_div) * 2.0;
     const osc_row_float: f128 = @intToFloat(f128, osc_rows);
-    const alt_osc_flat: f128 = osc_row_float * 2.0;
-    break :blk @floatToInt(i16, fp_div_float / alt_osc_flat);
+    break :blk @floatToInt(i16, fp_div_float / osc_row_float);
 };
 
 pub export fn _start() noreturn {
-    var buffer: [term_width]u8 = undefined;
+    var spaces: [range]u8 = undefined;
+    for (spaces) |*space| space.* = ' ';
     var line: i16 = 0;
     while (line < osc_rows) : (line += 1) {
         const scaled_osc: i16 = fposc(line * ctr_inc) * range;
-        const off_a: usize = @intCast(usize, @divTrunc(scaled_osc, fp_div));
-        const off_b: usize = @intCast(usize, range) - off_a;
-        const end_a: usize = off_a + banner.len;
-        const end_b: usize = off_b + banner.len;
-        const start_len: usize = @maximum(off_a, off_b);
-        const end_len: usize = @maximum(end_a, end_b);
-        for (buffer[0..start_len]) |*elem| elem.* = ' ';
-        for (buffer[off_a..end_a]) |*elem, i| elem.* = banner[i];
-        for (buffer[off_b..end_b]) |*elem, i| elem.* = banner[i];
-        _ = linux.write(1, @ptrCast([*]const u8, &buffer), end_len);
+        const offset: usize = @intCast(usize, @divTrunc(scaled_osc, fp_div));
+        _ = linux.write(1, @ptrCast([*]const u8, &spaces), offset);
+        _ = linux.write(1, banner, banner.len);
         _ = linux.write(1, "\n", 1);
     }
     _ = linux.exit(0);
