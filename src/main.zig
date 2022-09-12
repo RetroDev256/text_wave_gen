@@ -39,15 +39,16 @@ fn fposc(lhs: i16) i16 {
 // compile time constants used in _start()
 const ctr_inc: i16 = blk: {
     const fp_div_float: f128 = @intToFloat(f128, fp_div) * 2.0;
-    const osc_row_float: f128 = @intToFloat(f128, osc_rows);
-    break :blk @floatToInt(i16, fp_div_float / osc_row_float);
-};
+    const osc_row_float: f128 = @intToFloat(f128, osc_rows - 1);
+    const ctr_inc_norm: f128 = fp_div_float / osc_row_float;
+    break :blk @floatToInt(i16, @ceil(ctr_inc_norm));
+}
 
 pub export fn _start() noreturn {
     var spaces: [range]u8 = undefined;
     for (spaces) |*space| space.* = ' ';
     var line: i16 = 0;
-    while (line <= osc_rows) : (line += 1) {
+    while (line < osc_rows) : (line += 1) {
         const scaled_osc: i16 = fposc(line * ctr_inc) * range;
         const offset: usize = @intCast(usize, @divTrunc(scaled_osc, fp_div));
         _ = linux.write(1, @ptrCast([*]const u8, &spaces), offset);
