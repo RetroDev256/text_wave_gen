@@ -2,7 +2,7 @@ const std = @import("std");
 const linux = std.os.linux;
 
 // compile time configuration constants
-const banner = "Waveform";
+const banner = "diggy";
 const term_width = 80;
 const osc_rows = 40;
 
@@ -47,7 +47,7 @@ pub export fn _start() noreturn {
     var spaces: [range]u8 = undefined;
     for (spaces) |*space| space.* = ' ';
     var line: i16 = 0;
-    while (line < osc_rows) : (line += 1) {
+    while (line <= osc_rows) : (line += 1) {
         const scaled_osc: i16 = fposc(line * ctr_inc) * range;
         const offset: usize = @intCast(usize, @divTrunc(scaled_osc, fp_div));
         _ = linux.write(1, @ptrCast([*]const u8, &spaces), offset);
