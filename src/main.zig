@@ -39,7 +39,7 @@ fn fposc(lhs: i16) i16 {
 // compile time constants used in _start()
 const ctr_inc: i16 = blk: {
     const fp_div_float: f128 = @intToFloat(f128, fp_div) * 2.0;
-    const osc_row_float: f128 = @intToFloat(f128, osc_rows - 1);
+    const osc_row_float: f128 = @intToFloat(f128, osc_rows);
     const ctr_inc_norm: f128 = fp_div_float / osc_row_float;
     break :blk @floatToInt(i16, @ceil(ctr_inc_norm));
 };
